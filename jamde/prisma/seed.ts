@@ -1,5 +1,6 @@
 import "dotenv/config";
 import { PrismaClient } from "../lib/generated/prisma/client";
+import bcrypt from "bcryptjs";
 
 const prisma = new PrismaClient();
 
@@ -32,7 +33,7 @@ async function main() {
       data: {
         email: "admin@jamde.com",
         name: "Admin User",
-        password: "$2a$10$placeholder", // Placeholder - should hash in production
+        password: bcrypt.hashSync("password123", 10),
         role: "ADMIN",
         image: "/images/image 1.jpg",
         emailVerified: new Date(),
@@ -42,7 +43,7 @@ async function main() {
       data: {
         email: "customer1@jamde.com",
         name: "John Doe",
-        password: "$2a$10$placeholder",
+        password: bcrypt.hashSync("password123", 10),
         role: "CUSTOMER",
         image: "/images/image 2.jpg",
         emailVerified: new Date(),
@@ -52,7 +53,7 @@ async function main() {
       data: {
         email: "customer2@jamde.com",
         name: "Jane Smith",
-        password: "$2a$10$placeholder",
+        password: bcrypt.hashSync("password123", 10),
         role: "CUSTOMER",
         image: "/images/image 3.jpg",
         emailVerified: new Date(),

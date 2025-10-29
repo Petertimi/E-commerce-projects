@@ -41,11 +41,11 @@ Follow the UI/UX guidelines in docs/uiux-guidelines.md for all design decisions.
   - [x] Configure ESLint/Prettier, Husky + lint-staged, CI checks
   - [x] Install UI kit (Shadcn), icons (Lucide), charts (Recharts)
   - [x] Set up env management (.env.local, Zod-safe server/env parsing)
-- [ ] Auth & Access Control
+- [x] Auth & Access Control
   - Configure `next-auth@beta` with email/password and OAuth (Google, GitHub)
   - Implement session retrieval via `auth()` and server actions guards
   - Add RBAC (customer, admin) and protected routes/middleware
-- [ ] Data Layer
+- [x] Data Layer
   - Model core entities in Prisma: User, Product, Category, Variant/SKU, Inventory, Cart, Order, Payment, Address, Review, Wishlist, Coupon/Promotion, AuditLog
   - Add indexes, enums, constraints; create seed scripts and factories
   - Run migrations; verify with Postgres locally
@@ -120,7 +120,7 @@ Follow the UI/UX guidelines in docs/uiux-guidelines.md for all design decisions.
 
 ### 2. Database and Authentication [X]
 
-- [ ] Set up PostgreSQL database
+- [x] Set up PostgreSQL database
 - [x] Configure Prisma schema:
   - [x] User model
   - [x] Product model
