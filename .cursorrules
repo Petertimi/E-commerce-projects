@@ -40,7 +40,7 @@ Follow the UI/UX guidelines in docs/uiux-guidelines.md for all design decisions.
   - [x] Initialize Next.js 15 (TS), set strict mode, alias paths
   - [x] Configure ESLint/Prettier, Husky + lint-staged, CI checks
   - [x] Install UI kit (Shadcn), icons (Lucide), charts (Recharts)
-  - Set up env management (.env.local, Zod-safe server/env parsing)
+  - [x] Set up env management (.env.local, Zod-safe server/env parsing)
 - [ ] Auth & Access Control
   - Configure `next-auth@beta` with email/password and OAuth (Google, GitHub)
   - Implement session retrieval via `auth()` and server actions guards
@@ -121,13 +121,13 @@ Follow the UI/UX guidelines in docs/uiux-guidelines.md for all design decisions.
 ### 2. Database and Authentication [X]
 
 - [ ] Set up PostgreSQL database
-- [ ] Configure Prisma schema:
-  - User model
-  - Product model
-  - Category model
-  - Order model
-  - Review model
-  - Cart model
+- [x] Configure Prisma schema:
+  - [x] User model
+  - [x] Product model
+  - [x] Category model
+  - [x] Order model
+  - [x] Review model
+  - [x] Cart model
 - [ ] Implement NextAuth.js authentication:
   - Email/Password
   - OAuth providers (Google, GitHub)

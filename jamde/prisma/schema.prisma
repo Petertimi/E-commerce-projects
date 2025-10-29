@@ -1,0 +1,209 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client"
+  output   = "../lib/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Enums
+enum UserRole {
+  CUSTOMER
+  ADMIN
+}
+
+enum OrderStatus {
+  PENDING
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+  REFUNDED
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  FAILED
+  REFUNDED
+}
+
+// User Model
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String?
+  name      String?
+  role      UserRole  @default(CUSTOMER)
+  image     String?
+  emailVerified DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  orders    Order[]
+  reviews   Review[]
+  cart      Cart?
+
+  @@index([email])
+  @@map("users")
+}
+
+// Category Model
+model Category {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique
+  description String?
+  image       String?
+  parentId    String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  parent      Category? @relation("CategoryTree", fields: [parentId], references: [id], onDelete: SetNull)
+  children    Category[] @relation("CategoryTree")
+  products    Product[]
+
+  @@index([slug])
+  @@index([parentId])
+  @@map("categories")
+}
+
+// Product Model
+model Product {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique
+  description String?  @db.Text
+  price       Decimal  @db.Decimal(10, 2)
+  compareAtPrice Decimal? @db.Decimal(10, 2)
+  sku         String?  @unique
+  stock       Int      @default(0)
+  images      String[] @default([])
+  featured    Boolean  @default(false)
+  active      Boolean  @default(true)
+  categoryId  String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  category    Category @relation(fields: [categoryId], references: [id])
+  reviews     Review[]
+  orderItems  OrderItem[]
+  cartItems   CartItem[]
+
+  @@index([slug])
+  @@index([categoryId])
+  @@index([sku])
+  @@index([featured])
+  @@index([active])
+  @@map("products")
+}
+
+// Order Model
+model Order {
+  id            String        @id @default(cuid())
+  userId        String
+  status        OrderStatus   @default(PENDING)
+  paymentStatus PaymentStatus @default(PENDING)
+  total         Decimal       @db.Decimal(10, 2)
+  subtotal      Decimal       @db.Decimal(10, 2)
+  tax           Decimal       @default(0) @db.Decimal(10, 2)
+  shippingCost  Decimal       @default(0) @db.Decimal(10, 2)
+  shippingAddress Json?
+  billingAddress  Json?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  // Relations
+  user          User          @relation(fields: [userId], references: [id])
+  items         OrderItem[]
+
+  @@index([userId])
+  @@index([status])
+  @@index([createdAt])
+  @@map("orders")
+}
+
+// OrderItem Model (Junction table for Order-Product relationship)
+model OrderItem {
+  id        String   @id @default(cuid())
+  orderId   String
+  productId String
+  quantity  Int
+  price     Decimal  @db.Decimal(10, 2) // Price at time of order
+  createdAt DateTime @default(now())
+
+  // Relations
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product   Product  @relation(fields: [productId], references: [id])
+
+  @@index([orderId])
+  @@index([productId])
+  @@map("order_items")
+}
+
+// Review Model
+model Review {
+  id        String   @id @default(cuid())
+  userId    String
+  productId String
+  rating    Int      // 1-5 stars
+  title     String?
+  content   String?  @db.Text
+  verified  Boolean  @default(false) // Purchase verified
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  user      User     @relation(fields: [userId], references: [id])
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, productId]) // One review per user per product
+  @@index([productId])
+  @@index([rating])
+  @@map("reviews")
+}
+
+// Cart Model
+model Cart {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items     CartItem[]
+
+  @@index([userId])
+  @@map("carts")
+}
+
+// CartItem Model (Junction table for Cart-Product relationship)
+model CartItem {
+  id        String   @id @default(cuid())
+  cartId    String
+  productId String
+  quantity  Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  cart      Cart     @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([cartId, productId]) // One cart item per product per cart
+  @@index([cartId])
+  @@index([productId])
+  @@map("cart_items")
+}
