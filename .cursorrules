@@ -55,7 +55,7 @@ Follow the UI/UX guidelines in docs/uiux-guidelines.md for all design decisions.
   - Create `(home)` folder in `app` directory
   - Header with logo, search bar, and navigation
   - Footer with links and social media
-- [ ] Homepage:
+- [x] Homepage:
   - banner carousel
   - latest products
 - [ ] Products Catalog:
