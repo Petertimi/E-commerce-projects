@@ -6,7 +6,6 @@ import {
   CarouselPrevious,
   CarouselNext,
 } from "@/components/ui/carousel";
-import { PrismaClient } from "@/lib/generated/prisma/client";
 
 const banners = [
   "/images/banner 1.jpg",
@@ -14,26 +13,18 @@ const banners = [
   "/images/Banner 3.jpg",
 ];
 
-export default async function HomePage() {
-  const prisma = new PrismaClient();
-  const products = await prisma.product.findMany({
-    where: { active: true },
-    orderBy: { createdAt: "desc" },
-    take: 8,
-    select: {
-      id: true,
-      name: true,
-      price: true,
-      slug: true,
-      images: true,
-      stock: true,
-    },
-  });
+async function getProducts() {
+  const res = await fetch("/api/products", { cache: "no-store" });
+  if (!res.ok) return [];
+  return res.json();
+}
 
+export default async function HomePage() {
+  const products = await getProducts();
   return (
     <div className="p-4 max-w-7xl mx-auto">
-      {/* Banner Carousel with extra margin on top */}
-      <section className="mb-8 mt-8">
+      {/* Banner Carousel */}
+      <section className="mb-8">
         <div className="relative">
           <Carousel>
             <CarouselContent>
@@ -42,7 +33,7 @@ export default async function HomePage() {
                   <img
                     src={src}
                     alt={`Banner ${i + 1}`}
-                    className="rounded-lg w-full max-h-80 h-80 object-cover shadow"
+                    className="rounded-lg w-full max-h-56 object-cover shadow"
                   />
                 </CarouselItem>
               ))}

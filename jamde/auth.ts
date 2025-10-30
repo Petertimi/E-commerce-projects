@@ -27,14 +27,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 				return { id: user.id, email: user.email, name: user.name, image: user.image, role: user.role } as any;
 			},
 		}),
-		Google({
-			clientId: process.env.GOOGLE_CLIENT_ID ?? "",
-			clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? "",
-		}),
-		GitHub({
-			clientId: process.env.GITHUB_CLIENT_ID ?? "",
-			clientSecret: process.env.GITHUB_CLIENT_SECRET ?? "",
-		}),
 	],
 	callbacks: {
 		async jwt({ token, user }) {
