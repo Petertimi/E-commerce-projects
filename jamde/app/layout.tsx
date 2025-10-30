@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { Header } from '@/components/ui/header';
 import { Footer } from '@/components/ui/footer';
 import type { ReactNode } from 'react';
+import { ToasterProvider } from '@/components/ui/toaster-provider';
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
@@ -15,6 +16,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           </main>
           <Footer />
         </div>
+        <ToasterProvider />
       </body>
     </html>
   );

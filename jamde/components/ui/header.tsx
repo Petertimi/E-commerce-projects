@@ -1,5 +1,6 @@
 import Link from 'next/link';
-import { Search, ShoppingCart } from 'lucide-react';
+import { Search } from 'lucide-react';
+import { CartBadge } from './cart-badge';
 
 export function Header() {
   return (
@@ -25,9 +26,7 @@ export function Header() {
 
       {/* Right: Cart and Sign In */}
       <div className="flex items-center gap-6">
-        <Link href="/cart">
-          <ShoppingCart className="h-6 w-6 text-muted-foreground hover:text-primary transition" />
-        </Link>
+        <CartBadge />
         <button className="px-6 py-2 rounded bg-black text-white text-base font-medium hover:bg-primary/90 transition">Sign In</button>
       </div>
     </header>
