@@ -49,6 +49,47 @@ Follow the UI/UX guidelines in docs/uiux-guidelines.md for all design decisions.
   - Model core entities in Prisma: User, Product, Category, Variant/SKU, Inventory, Cart, Order, Payment, Address, Review, Wishlist, Coupon/Promotion, AuditLog
   - Add indexes, enums, constraints; create seed scripts and factories
   - Run migrations; verify with Postgres locally
+  ### 3. Core Features - Customer Side [ ]
+
+- [ ] Home Layout:
+  - Create `(home)` folder in `app` directory
+  - Header with logo, search bar, and navigation
+  - Footer with links and social media
+- [ ] Homepage:
+  - banner carousel
+  - latest products
+- [ ] Products Catalog:
+  - Sidebar with categories and filters
+  - Search results
+  - Product grid
+  - Pagination
+- [ ] Product pages:
+  - Create product detail page layout
+  - Implement image gallery with thumbnails
+  - Add product information section:
+    - Title, price, description
+    - Stock status
+    - Add to cart button
+  - Reviews and ratings section:
+    - Display existing reviews
+    - Add review form for authenticated users
+    - Star rating component
+  - Related products section:
+    - Show products from same category
+    - Product card carousel
+- [ ] Shopping cart:
+  - Add/remove items
+  - Update quantities
+  - Cart persistence
+- [ ] Checkout process:
+  - Shipping information
+  - Payment integration (Stripe)
+  - Order confirmation
+- [ ] User dashboard:
+  - Order history
+  - Profile management
+  - Saved addresses
+  - Wishlist
 - [ ] UI Foundation
   - Configure Shadcn theme, typography, color tokens, spacing scale
   - Add base components: Button, Input, Select, Dialog, Sheet, Dropdown, Tooltip, Toast
