@@ -54,15 +54,27 @@ export default function CheckoutPage() {
     try {
       // Create order first
       const orderRes = await fetch('/api/orders/create', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ items, shipping: form }) })
-      if (!orderRes.ok) throw new Error('Order creation failed')
+      if (!orderRes.ok) {
+        const err = await orderRes.json().catch(() => ({} as any))
+        const msg = (err && (err.error || err.details)) || 'Order creation failed'
+        alert(msg)
+        throw new Error(msg)
+      }
       const { orderId } = await orderRes.json()
       // Initialize payment (Stripe)
       const payRes = await fetch('/api/payments/stripe/checkout', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ items, shipping: form, currency: 'usd', orderId }) })
-      if (!payRes.ok) throw new Error('Payment initialization failed')
+      if (!payRes.ok) {
+        const err = await payRes.json().catch(() => ({} as any))
+        const msg = (err && (err.error || err.details)) || 'Payment initialization failed'
+        alert(msg)
+        throw new Error(msg)
+      }
       const data = await payRes.json()
       if (data.url) {
         window.location.href = data.url as string
       }
+    } catch (e: any) {
+      console.error(e)
     } finally {
       setSubmitting(false)
     }

@@ -50,6 +50,23 @@ export function ProductSidebar() {
     fetchCategories()
   }, [])
 
+  // Sync initial slider/category/sort with URL params so UI reflects current filters
+  useEffect(() => {
+    const min = Number(searchParams.get('minPrice'))
+    const max = Number(searchParams.get('maxPrice'))
+    const cat = searchParams.get('category') || 'all'
+    const sort = searchParams.get('sort') || 'default'
+
+    const nextRange: [number, number] = [
+      Number.isFinite(min) ? Math.max(0, Math.floor(min)) : 0,
+      Number.isFinite(max) ? Math.min(1000000, Math.ceil(max)) : 1000,
+    ]
+    setPriceRange(nextRange)
+    setSelectedCategory(cat)
+    setSelectedSort(sort)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams])
+
   const handleFilter = () => {
     const params = new URLSearchParams()
     if (selectedCategory && selectedCategory !== 'all')
@@ -95,7 +112,7 @@ export function ProductSidebar() {
             value={priceRange}
             min={0}
             max={1000}
-            step={10}
+            step={1}
             onValueChange={setPriceRange}
           />
         </div>

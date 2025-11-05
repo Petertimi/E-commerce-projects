@@ -2,7 +2,7 @@ import Link from "next/link";
 import { ProductCard } from "@/components/ui/product-card";
 import { SidebarFilters } from "@/components/ui/SidebarFilters";
 import { Suspense } from "react";
-import { PrismaClient } from "@/lib/generated/prisma/client";
+import { PrismaClient } from "@prisma/client";
 
 type SearchParams = {
   q?: string;

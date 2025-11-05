@@ -1,4 +1,4 @@
-import { PrismaClient } from "@/lib/generated/prisma/client";
+import { PrismaClient } from "@prisma/client";
 import { notFound } from "next/navigation";
 import { ProductGallery } from "@/components/ui/product-gallery";
 import { AddToCartButton } from "@/components/ui/add-to-cart-button";
@@ -65,7 +65,9 @@ export default async function Page(props: PageProps) {
           <div className="flex items-center gap-2 text-sm text-muted-foreground mb-3">
             {(() => {
               const count = reviews.length;
-              const avg = count ? Math.round((reviews.reduce((a, r) => a + r.rating, 0) / count) * 2) / 2 : 0;
+              const avg = count
+                ? Math.round((reviews.reduce((sum: number, r: { rating: number }) => sum + r.rating, 0) / count) * 2) / 2
+                : 0;
               const stars = [1,2,3,4,5].map(i => (i <= Math.floor(avg) ? '★' : '☆')).join('');
               return (
                 <>
@@ -108,7 +110,12 @@ export default async function Page(props: PageProps) {
             <h2 className="text-xl font-semibold">Related products</h2>
             <Link href="/products" className="text-sm text-primary hover:underline">View all</Link>
           </div>
-          <ProductCarousel products={related.map(r => ({ ...r, price: Number(r.price as unknown as number) }))} />
+          <ProductCarousel
+            products={related.map((r: { id: string; name: string; price: unknown; slug: string; images: string[]; stock: number }) => ({
+              ...r,
+              price: Number(r.price as unknown as number),
+            }))}
+          />
         </section>
       )}
 
