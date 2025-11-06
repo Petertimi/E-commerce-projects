@@ -53,32 +53,38 @@ export default async function Page() {
   })
 
   return (
-    <div className="space-y-8">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-        <Link href="/account/orders" className="rounded-2xl border p-5 hover:shadow-sm transition bg-white">
-          <div className="flex items-center justify-between text-sm text-muted-foreground">
-            <span>Total Orders</span>
-            <ShoppingBag className="h-4 w-4" />
-          </div>
-          <div className="mt-2 text-3xl font-bold">{ordersCount}</div>
-        </Link>
-        <Link href="/account/addresses" className="rounded-2xl border p-5 hover:shadow-sm transition bg-white">
-          <div className="flex items-center justify-between text-sm text-muted-foreground">
-            <span>Saved Addresses</span>
-            <MapPin className="h-4 w-4" />
-          </div>
-          <div className="mt-2 text-3xl font-bold">{addressesCount}</div>
-        </Link>
-        <Link href="/account/wishlist" className="rounded-2xl border p-5 hover:shadow-sm transition bg-white">
-          <div className="flex items-center justify-between text-sm text-muted-foreground">
-            <span>Wishlist Items</span>
-            <Heart className="h-4 w-4" />
-          </div>
-          <div className="mt-2 text-3xl font-bold">{wishlistCount}</div>
-        </Link>
+    <div className="p-6">
+      <div className="mb-6">
+        <h1 className="text-3xl font-bold">Dashboard</h1>
+        <p className="text-muted-foreground mt-1">Welcome back, {(session.user as any)?.name || 'User'}</p>
       </div>
 
-      <div className="space-y-3">
+      <div className="space-y-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+          <Link href="/account/orders" className="rounded-2xl border p-5 hover:shadow-sm transition bg-white">
+            <div className="flex items-center justify-between text-sm text-muted-foreground">
+              <span>Total Orders</span>
+              <ShoppingBag className="h-4 w-4" />
+            </div>
+            <div className="mt-2 text-3xl font-bold">{ordersCount}</div>
+          </Link>
+          <Link href="/account/addresses" className="rounded-2xl border p-5 hover:shadow-sm transition bg-white">
+            <div className="flex items-center justify-between text-sm text-muted-foreground">
+              <span>Saved Addresses</span>
+              <MapPin className="h-4 w-4" />
+            </div>
+            <div className="mt-2 text-3xl font-bold">{addressesCount}</div>
+          </Link>
+          <Link href="/account/wishlist" className="rounded-2xl border p-5 hover:shadow-sm transition bg-white">
+            <div className="flex items-center justify-between text-sm text-muted-foreground">
+              <span>Wishlist Items</span>
+              <Heart className="h-4 w-4" />
+            </div>
+            <div className="mt-2 text-3xl font-bold">{wishlistCount}</div>
+          </Link>
+        </div>
+
+        <div className="space-y-3">
         <h3 className="text-lg font-semibold">Recent Orders</h3>
         {recentOrders.length === 0 ? (
           <div className="rounded-2xl border p-6 text-center text-muted-foreground bg-white">No recent orders</div>
@@ -98,6 +104,7 @@ export default async function Page() {
             ))}
           </div>
         )}
+        </div>
       </div>
     </div>
   )

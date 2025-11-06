@@ -19,8 +19,12 @@ export default async function Page() {
   const userId = (session.user as any).id as string
   const user = await prisma.user.findUnique({ where: { id: userId } })
   return (
-    <div className="space-y-6">
-      <h2 className="text-xl font-semibold">Profile</h2>
+    <div className="p-6">
+      <div className="mb-6">
+        <h1 className="text-3xl font-bold">Profile</h1>
+        <p className="text-muted-foreground mt-1">Manage your profile information</p>
+      </div>
+      <div className="space-y-6">
       <form action={updateProfile} className="space-y-4 max-w-md">
         <div className="space-y-2">
           <label className="block text-sm font-medium">Name</label>
@@ -32,6 +36,7 @@ export default async function Page() {
         </div>
         <button className="px-4 py-2 rounded bg-black text-white">Save</button>
       </form>
+      </div>
     </div>
   )
 }

@@ -13,6 +13,7 @@ export async function Header() {
       <div className="flex items-center gap-8">
         <Link href="/" className="font-black text-2xl tracking-tight">Jamde</Link>
         <Link href="/products" className="text-base font-medium text-muted-foreground hover:text-primary px-4 py-2 rounded-lg transition">Products Catalog</Link>
+        <Link href="/sell" className="text-base font-medium text-muted-foreground hover:text-primary px-4 py-2 rounded-lg transition">Sell with Us</Link>
       </div>
 
       {/* Center: Large Search Bar */}
@@ -26,7 +27,7 @@ export async function Header() {
       <div className="flex items-center gap-6">
         <CartBadge />
         {session?.user ? (
-          <UserMenu user={{ name: session.user.name ?? null, email: session.user.email ?? null }} />
+          <UserMenu user={{ name: session.user.name ?? null, email: session.user.email ?? null, role: (session.user as any).role }} />
         ) : (
           <Link href="/api/auth/signin" className="px-6 py-2 rounded bg-black text-white text-base font-medium hover:bg-primary/90 transition">Sign In</Link>
         )}

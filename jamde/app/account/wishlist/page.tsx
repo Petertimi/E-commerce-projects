@@ -49,13 +49,18 @@ export default async function Page() {
   if (!wishlist) {
     // Render CTA to initialize wishlist
     return (
-      <div className="space-y-6">
-        <h2 className="text-xl font-semibold">Wishlist</h2>
-        <div className="rounded border p-6 text-center">
-          <p className="mb-4 text-muted-foreground">No wishlist yet. Create one to save products you love.</p>
-          <form action={ensureWishlist}>
-            <button className="px-4 py-2 rounded bg-black text-white">Create wishlist</button>
-          </form>
+      <div className="p-6">
+        <div className="mb-6">
+          <h1 className="text-3xl font-bold">Wishlist</h1>
+          <p className="text-muted-foreground mt-1">Save products you love</p>
+        </div>
+        <div className="space-y-6">
+          <div className="rounded border p-6 text-center bg-white">
+            <p className="mb-4 text-muted-foreground">No wishlist yet. Create one to save products you love.</p>
+            <form action={ensureWishlist}>
+              <button className="px-4 py-2 rounded bg-black text-white">Create wishlist</button>
+            </form>
+          </div>
         </div>
       </div>
     )
@@ -64,8 +69,12 @@ export default async function Page() {
   const items = (wishlist?.items ?? []) as any[]
 
   return (
-    <div className="space-y-6">
-      <h2 className="text-xl font-semibold">Wishlist</h2>
+    <div className="p-6">
+      <div className="mb-6">
+        <h1 className="text-3xl font-bold">Wishlist</h1>
+        <p className="text-muted-foreground mt-1">Your saved products</p>
+      </div>
+      <div className="space-y-6">
       {items.length === 0 ? (
         <div className="rounded border p-6 text-center text-muted-foreground">
           Your wishlist is empty. <Link className="underline" href="/products">Browse products</Link>
@@ -91,6 +100,7 @@ export default async function Page() {
           ))}
         </div>
       )}
+      </div>
     </div>
   )
 }

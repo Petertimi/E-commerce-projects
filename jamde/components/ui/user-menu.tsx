@@ -5,7 +5,7 @@ import { User } from 'lucide-react'
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu'
 import { signOut } from 'next-auth/react'
 
-type UserInfo = { name?: string | null; email?: string | null }
+type UserInfo = { name?: string | null; email?: string | null; role?: string | null }
 
 export function UserMenu({ user }: { user?: UserInfo }) {
   return (
@@ -36,6 +36,14 @@ export function UserMenu({ user }: { user?: UserInfo }) {
           <DropdownMenu.Item asChild>
             <Link href="/account/addresses" className="px-2 py-2 text-sm rounded hover:bg-muted block">Addresses</Link>
           </DropdownMenu.Item>
+          {user?.role === 'ADMIN' && (
+            <>
+              <DropdownMenu.Separator className="h-px bg-muted my-1" />
+              <DropdownMenu.Item asChild>
+                <Link href="/admin" className="px-2 py-2 text-sm rounded hover:bg-muted block">Admin Dashboard</Link>
+              </DropdownMenu.Item>
+            </>
+          )}
           <DropdownMenu.Separator className="h-px bg-muted my-1" />
           <DropdownMenu.Item asChild>
             <button onClick={() => signOut({ callbackUrl: '/' })} className="w-full text-left px-2 py-2 text-sm rounded hover:bg-red-50 text-red-600">Sign out</button>

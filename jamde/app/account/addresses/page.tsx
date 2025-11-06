@@ -1,9 +1,8 @@
-import { PrismaClient, type Address } from '@prisma/client'
+import { type Address } from '@prisma/client'
 import { auth } from '@/auth'
 import { revalidatePath } from 'next/cache'
 import { Star, Trash2 } from 'lucide-react'
-
-const prisma = new PrismaClient()
+import { prisma } from '@/lib/prisma'
 
 async function createAddress(formData: FormData) {
   'use server'
@@ -85,15 +84,25 @@ export default async function Page() {
   const addresses: Address[] = await (async () => {
     try {
       return await prisma.address.findMany({ where: { userId }, orderBy: [{ isDefault: 'desc' }, { createdAt: 'desc' }] })
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error fetching addresses:', error)
+      // If it's a connection error, return empty array gracefully
+      if (error?.code === 'P1001' || error?.name === 'PrismaClientInitializationError') {
+        console.error('Database connection error. Please check your DATABASE_URL and ensure the database is running.')
+        return [] as Address[]
+      }
       return [] as Address[]
     }
   })()
 
   return (
-    <div className="space-y-6">
-      <div className="rounded border p-6 bg-white">
+    <div className="p-6">
+      <div className="mb-6">
+        <h1 className="text-3xl font-bold">Addresses</h1>
+        <p className="text-muted-foreground mt-1">Manage your shipping addresses</p>
+      </div>
+      <div className="space-y-6">
+        <div className="rounded border p-6 bg-white">
         <h3 className="font-medium mb-4">Add Address</h3>
         <form action={createAddress} className="space-y-4">
           <input name="fullName" placeholder="Full name" className="w-full border rounded px-3 py-2" required />
@@ -150,6 +159,7 @@ export default async function Page() {
             ))}
           </div>
         )}
+      </div>
       </div>
     </div>
   )

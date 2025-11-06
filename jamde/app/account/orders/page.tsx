@@ -16,8 +16,12 @@ export default async function Page() {
   })
 
   return (
-    <div className="space-y-6">
-      <h2 className="text-xl font-semibold">Order History</h2>
+    <div className="p-6">
+      <div className="mb-6">
+        <h1 className="text-3xl font-bold">Orders</h1>
+        <p className="text-muted-foreground mt-1">Your order history</p>
+      </div>
+      <div className="space-y-6">
       {orders.length === 0 ? (
         <div className="rounded border p-6 text-center text-muted-foreground">
           No orders yet. <Link className="underline" href="/products">Browse products</Link>
@@ -45,6 +49,7 @@ export default async function Page() {
           ))}
         </div>
       )}
+      </div>
     </div>
   )
 }
