@@ -3,6 +3,7 @@ import { Search } from 'lucide-react';
 import { CartBadge } from './cart-badge';
 import { auth } from '@/auth';
 import { UserMenu } from './user-menu';
+import HeaderSearch from './header-search';
 
 export async function Header() {
   const session = await auth();
@@ -16,22 +17,16 @@ export async function Header() {
 
       {/* Center: Large Search Bar */}
       <div className="flex-1 flex justify-center px-8">
-        <form className="w-full max-w-xl relative">
-          <input
-            type="search"
-            placeholder="Search products..."
-            className="w-full border rounded-lg py-2 pl-10 pr-4 text-base focus:ring-2 focus:ring-primary shadow focus:outline-none bg-white"
-            autoComplete="off"
-          />
-          <Search className="absolute left-3 top-2.5 h-5 w-5 text-muted-foreground" />
-        </form>
+        {/* Client-side search to ensure navigation always includes q */}
+        {/* eslint-disable-next-line @next/next/no-async-client-component */}
+        <HeaderSearch />
       </div>
 
       {/* Right: Cart and Sign In */}
       <div className="flex items-center gap-6">
         <CartBadge />
         {session?.user ? (
-          <UserMenu />
+          <UserMenu user={{ name: session.user.name ?? null, email: session.user.email ?? null }} />
         ) : (
           <Link href="/api/auth/signin" className="px-6 py-2 rounded bg-black text-white text-base font-medium hover:bg-primary/90 transition">Sign In</Link>
         )}

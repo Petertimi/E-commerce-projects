@@ -53,6 +53,8 @@ model User {
   cart      Cart?
   accounts  Account[]
   sessions  Session[]
+  addresses Address[]
+  wishlist  Wishlist?
 
   @@index([email])
   @@map("users")
@@ -101,6 +103,7 @@ model Product {
   reviews     Review[]
   orderItems  OrderItem[]
   cartItems   CartItem[]
+  wishlistItems WishlistItem[]
 
   @@index([slug])
   @@index([categoryId])
@@ -108,6 +111,61 @@ model Product {
   @@index([featured])
   @@index([active])
   @@map("products")
+}
+
+// Address Model
+model Address {
+  id          String   @id @default(cuid())
+  userId      String
+  label       String? // e.g., Home, Work
+  fullName    String
+  phone       String?
+  addressLine1 String
+  addressLine2 String?
+  city        String
+  state       String?
+  postalCode  String?
+  country     String
+  isDefault   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("addresses")
+}
+
+// Wishlist models
+model Wishlist {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items     WishlistItem[]
+
+  @@index([userId])
+  @@map("wishlists")
+}
+
+model WishlistItem {
+  id         String   @id @default(cuid())
+  wishlistId String
+  productId  String
+  createdAt  DateTime @default(now())
+
+  // Relations
+  wishlist   Wishlist @relation(fields: [wishlistId], references: [id], onDelete: Cascade)
+  product    Product  @relation(fields: [productId], references: [id])
+
+  @@unique([wishlistId, productId])
+  @@index([wishlistId])
+  @@index([productId])
+  @@map("wishlist_items")
 }
 
 // Order Model
