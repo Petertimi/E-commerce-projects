@@ -1,85 +1,315 @@
 "use client"
 
+import type React from "react"
+
+import { useState } from "react"
+
 import { Button } from "@/components/ui/button"
-import { ExternalLink } from "lucide-react"
+
+interface FormData {
+  businessName: string
+  ownerName: string
+  email: string
+  phone: string
+  craftType: string
+  businessDescription: string
+  yearsExperience: string
+  location: string
+  website: string
+  agreeTerms: boolean
+}
+
+type FormErrors = {
+  businessName?: string
+  ownerName?: string
+  email?: string
+  phone?: string
+  craftType?: string
+  businessDescription?: string
+  yearsExperience?: string
+  location?: string
+  website?: string
+  agreeTerms?: string
+}
+
+const CRAFT_TYPES = ["Painting", "Sculpture", "Furniture Making", "Bead Making", "Other"]
 
 export default function SellerForm({ onSubmit }: { onSubmit: () => void }) {
+  const [formData, setFormData] = useState<FormData>({
+    businessName: "",
+    ownerName: "",
+    email: "",
+    phone: "",
+    craftType: "",
+    businessDescription: "",
+    yearsExperience: "",
+    location: "",
+    website: "",
+    agreeTerms: false,
+  })
+
+  const [errors, setErrors] = useState<FormErrors>({})
+  const [isLoading, setIsLoading] = useState(false)
+
+  const validateForm = () => {
+    const newErrors: FormErrors = {}
+
+    if (!formData.businessName.trim()) newErrors.businessName = "Business name is required"
+    if (!formData.ownerName.trim()) newErrors.ownerName = "Owner name is required"
+    if (!formData.email.trim() || !formData.email.includes("@")) newErrors.email = "Valid email is required"
+    if (!formData.phone.trim()) newErrors.phone = "Phone number is required"
+    if (!formData.craftType) newErrors.craftType = "Please select your craft type"
+    if (!formData.businessDescription.trim()) newErrors.businessDescription = "Business description is required"
+    if (!formData.yearsExperience) newErrors.yearsExperience = "Experience is required"
+    if (!formData.location.trim()) newErrors.location = "Location is required"
+    if (!formData.agreeTerms) newErrors.agreeTerms = "You must agree to terms"
+
+    setErrors(newErrors)
+    return Object.keys(newErrors).length === 0
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+
+    if (!validateForm()) return
+
+    setIsLoading(true)
+
+    try {
+      const response = await fetch('/api/seller-applications', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          businessName: formData.businessName,
+          ownerName: formData.ownerName,
+          email: formData.email,
+          phone: formData.phone,
+          craftType: formData.craftType,
+          businessDescription: formData.businessDescription,
+          yearsExperience: formData.yearsExperience,
+          location: formData.location,
+          website: formData.website || undefined,
+        }),
+      })
+
+      // Check if response is ok before parsing JSON
+      if (!response.ok) {
+        let errorMessage = 'Failed to submit application'
+        try {
+          const errorData = await response.json()
+          errorMessage = errorData.error || errorData.message || errorMessage
+        } catch {
+          // If response is not JSON, use status text
+          errorMessage = response.statusText || errorMessage
+        }
+        throw new Error(errorMessage)
+      }
+
+      const result = await response.json()
+
+      if (!result.success) {
+        throw new Error(result.error || 'Failed to submit application')
+      }
+
+      setIsLoading(false)
+      onSubmit()
+    } catch (error) {
+      console.error('Error submitting form:', error)
+      const errorMessage = error instanceof Error ? error.message : 'Failed to submit application. Please try again.'
+      alert(errorMessage)
+      setIsLoading(false)
+    }
+  }
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { name, type, value } = e.target as HTMLInputElement
+
+    setFormData((prev) => ({
+      ...prev,
+      [name]: type === "checkbox" ? (e.target as HTMLInputElement).checked : value,
+    }))
+
+    // Clear error when user starts typing
+    if (errors[name as keyof FormData]) {
+      setErrors((prev) => ({
+        ...prev,
+        [name]: undefined,
+      }))
+    }
+  }
+
   return (
-    <div className="space-y-6">
+    <form onSubmit={handleSubmit} className="space-y-6">
       <div>
-        <h2 className="text-2xl font-serif font-bold text-foreground mb-1">Join Our Waitlist</h2>
-        <p className="text-sm text-muted-foreground">Tell us about your business and help us build the perfect platform for African creatives</p>
+        <h2 className="text-2xl font-serif font-bold text-foreground mb-1">Tell Us About Your Craft</h2>
+        <p className="text-sm text-muted-foreground">Help customers discover your unique African creations</p>
       </div>
 
-      {/* About Section */}
-      <div className="space-y-4">
-        <div className="bg-muted/50 rounded-lg p-6 space-y-4">
-          <h3 className="text-lg font-semibold text-foreground">About Our Platform</h3>
-          <p className="text-sm text-muted-foreground">
-            We're building a marketplace that celebrates African craftsmanship and creativity. Join our waitlist to be among the first sellers when we launch, and help us shape a platform designed specifically for African artisans, designers, and creatives.
-          </p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
-            <div className="flex items-start gap-3">
-              <span className="text-2xl">🎨</span>
-              <div>
-                <h4 className="font-semibold text-sm text-foreground">Showcase Your Work</h4>
-                <p className="text-xs text-muted-foreground">Beautiful storefront to display your creations</p>
-              </div>
-            </div>
-            <div className="flex items-start gap-3">
-              <span className="text-2xl">🌍</span>
-              <div>
-                <h4 className="font-semibold text-sm text-foreground">Global Reach</h4>
-                <p className="text-xs text-muted-foreground">Connect with customers worldwide</p>
-              </div>
-            </div>
-            <div className="flex items-start gap-3">
-              <span className="text-2xl">💰</span>
-              <div>
-                <h4 className="font-semibold text-sm text-foreground">Fair Pricing</h4>
-                <p className="text-xs text-muted-foreground">Competitive rates and fast payouts</p>
-              </div>
-            </div>
-            <div className="flex items-start gap-3">
-              <span className="text-2xl">🤝</span>
-              <div>
-                <h4 className="font-semibold text-sm text-foreground">Support</h4>
-                <p className="text-xs text-muted-foreground">Dedicated seller support and community</p>
-              </div>
-            </div>
-          </div>
-        </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <FormField
+          label="Business Name"
+          name="businessName"
+          placeholder="e.g., Amara's Paintings"
+          value={formData.businessName}
+          onChange={handleChange}
+          error={errors.businessName as string}
+        />
 
-        {/* Waitlist CTA */}
-        <div className="bg-primary/10 border border-primary/20 rounded-lg p-6 text-center space-y-4">
-          <h3 className="text-xl font-semibold text-foreground">Ready to Join?</h3>
-          <p className="text-sm text-muted-foreground max-w-2xl mx-auto">
-            Fill out our waitlist form to tell us about your business, craft type, and what you'd like to see on our platform. 
-            We'll keep you updated on our launch and ensure you're among the first to start selling.
-          </p>
-          <Button
-            onClick={() => window.open("https://forms.gle/pgxXSvReZDdTQCLk6", "_blank")}
-            className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold py-2 px-8 inline-flex items-center gap-2"
+        <FormField
+          label="Owner Name"
+          name="ownerName"
+          placeholder="Your full name"
+          value={formData.ownerName}
+          onChange={handleChange}
+          error={errors.ownerName as string}
+        />
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <FormField
+          label="Email"
+          name="email"
+          type="email"
+          placeholder="your@email.com"
+          value={formData.email}
+          onChange={handleChange}
+          error={errors.email as string}
+        />
+
+        <FormField
+          label="Phone"
+          name="phone"
+          placeholder="+1 (555) 000-0000"
+          value={formData.phone}
+          onChange={handleChange}
+          error={errors.phone as string}
+        />
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label className="block text-sm font-medium text-foreground mb-2">Craft Type</label>
+          <select
+            name="craftType"
+            value={formData.craftType}
+            onChange={handleChange}
+            className={`w-full px-3 py-2 border rounded-md bg-card text-foreground focus:outline-none focus:ring-2 focus:ring-primary transition-colors ${
+              errors.craftType ? "border-destructive" : "border-border"
+            }`}
           >
-            Join the Waitlist
-            <ExternalLink className="h-4 w-4" />
-          </Button>
-          <p className="text-xs text-muted-foreground">
-            This will open a Google Form in a new tab
-          </p>
+            <option value="">Select your craft type...</option>
+            {CRAFT_TYPES.map((type) => (
+              <option key={type} value={type}>
+                {type}
+              </option>
+            ))}
+          </select>
+          {errors.craftType && <p className="text-xs text-destructive mt-1">{errors.craftType}</p>}
         </div>
 
-        {/* Additional Information */}
-        <div className="space-y-3 pt-4 border-t">
-          <h4 className="font-semibold text-foreground">What to Expect</h4>
-          <ul className="space-y-2 text-sm text-muted-foreground list-disc list-inside">
-            <li>Early access when we launch our seller platform</li>
-            <li>Updates on platform development and features</li>
-            <li>Opportunity to provide feedback and shape the platform</li>
-            <li>Priority support when you become a seller</li>
-          </ul>
-        </div>
+        <FormField
+          label="Years of Experience"
+          name="yearsExperience"
+          type="number"
+          placeholder="e.g., 5"
+          value={formData.yearsExperience}
+          onChange={handleChange}
+          error={errors.yearsExperience as string}
+        />
       </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <FormField
+          label="Location"
+          name="location"
+          placeholder="City, Country"
+          value={formData.location}
+          onChange={handleChange}
+          error={errors.location as string}
+        />
+
+        <FormField
+          label="Website (Optional)"
+          name="website"
+          type="url"
+          placeholder="https://yoursite.com"
+          value={formData.website}
+          onChange={handleChange}
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-foreground mb-2">Business Description</label>
+        <textarea
+          name="businessDescription"
+          value={formData.businessDescription}
+          onChange={handleChange}
+          placeholder="Tell us about your craft, your inspiration, and what makes your work unique..."
+          rows={4}
+          className={`w-full px-3 py-2 border rounded-md bg-card text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary transition-colors ${
+            errors.businessDescription ? "border-destructive" : "border-border"
+          }`}
+        />
+        {errors.businessDescription && <p className="text-xs text-destructive mt-1">{errors.businessDescription}</p>}
+      </div>
+
+      <div className="flex items-start gap-2">
+        <input
+          type="checkbox"
+          name="agreeTerms"
+          checked={formData.agreeTerms}
+          onChange={handleChange}
+          className="mt-1 w-4 h-4 rounded border-border bg-card cursor-pointer accent-primary"
+        />
+        <label className="text-sm text-foreground cursor-pointer">
+          I agree to the Terms of Service and confirm that I create original, authentic work that celebrates African
+          craftsmanship
+          {errors.agreeTerms && <p className="text-xs text-destructive">{errors.agreeTerms}</p>}
+        </label>
+      </div>
+
+      <Button
+        type="submit"
+        disabled={isLoading}
+        className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold py-2"
+      >
+        {isLoading ? "Submitting..." : "Apply to Sell"}
+      </Button>
+
+      <p className="text-xs text-center text-muted-foreground">
+        By submitting this form, you agree to be contacted by email with updates about your application.
+      </p>
+    </form>
+  )
+}
+
+interface FormFieldProps {
+  label: string
+  name: string
+  type?: string
+  placeholder?: string
+  value: string
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
+  error?: string
+}
+
+function FormField({ label, name, type = "text", placeholder, value, onChange, error }: FormFieldProps) {
+  return (
+    <div>
+      <label className="block text-sm font-medium text-foreground mb-2">{label}</label>
+      <input
+        type={type}
+        name={name}
+        placeholder={placeholder}
+        value={value}
+        onChange={onChange}
+        className={`w-full px-3 py-2 border rounded-md bg-card text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary transition-colors ${
+          error ? "border-destructive" : "border-border"
+        }`}
+      />
+      {error && <p className="text-xs text-destructive mt-1">{error}</p>}
     </div>
   )
 }

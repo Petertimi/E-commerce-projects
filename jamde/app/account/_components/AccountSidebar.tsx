@@ -34,7 +34,7 @@ export function AccountSidebar() {
           <div className="p-6 border-b">
             <Link href="/account" className="flex items-center gap-2">
               <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-lg">J</span>
+                <span className="text-white font-bold text-lg">I</span>
               </div>
               <span className="font-bold text-xl">My Account</span>
             </Link>

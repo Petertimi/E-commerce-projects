@@ -11,7 +11,7 @@ export async function Header() {
     <header className="w-full border-b bg-white/90 sticky top-0 z-20 px-6 py-4 flex items-center justify-between">
       {/* Left: Brand and Catalog link */}
       <div className="flex items-center gap-8">
-        <Link href="/" className="font-black text-2xl tracking-tight">Jamde</Link>
+        <Link href="/" className="font-black text-2xl tracking-tight">Inkmystle</Link>
         <Link href="/products" className="text-base font-medium text-muted-foreground hover:text-primary px-4 py-2 rounded-lg transition">Products Catalog</Link>
         <Link href="/sell" className="text-base font-medium text-muted-foreground hover:text-primary px-4 py-2 rounded-lg transition">Sell with Us</Link>
       </div>

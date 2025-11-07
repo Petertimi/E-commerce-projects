@@ -7,7 +7,7 @@ import {
   Package,
   ShoppingBag,
   Users,
-  Settings,
+  FileText,
   LogOut,
 } from 'lucide-react'
 import { signOut } from 'next-auth/react'
@@ -17,6 +17,7 @@ const navItems = [
   { href: '/admin/products', label: 'Products', icon: Package },
   { href: '/admin/orders', label: 'Orders', icon: ShoppingBag },
   { href: '/admin/users', label: 'Users', icon: Users },
+  { href: '/admin/seller-applications', label: 'Seller Applications', icon: FileText },
 ]
 
 export function AdminSidebar() {
@@ -34,7 +35,7 @@ export function AdminSidebar() {
           <div className="p-6 border-b">
             <Link href="/admin" className="flex items-center gap-2">
               <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-lg">J</span>
+                <span className="text-white font-bold text-lg">I</span>
               </div>
               <span className="font-bold text-xl">Admin</span>
             </Link>

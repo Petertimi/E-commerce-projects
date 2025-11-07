@@ -1,10 +1,39 @@
 "use client"
 
+import { useState } from "react"
+
+import { Button } from "@/components/ui/button"
+
 import { Card } from "@/components/ui/card"
 
 import SellerForm from "./seller-form"
+import Link from "next/link"
 
 export default function SellerOnboarding() {
+  const [submitted, setSubmitted] = useState(false)
+
+  if (submitted) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center p-4">
+        <Card className="max-w-md w-full p-8 text-center">
+          <h2 className="text-3xl font-serif font-bold text-foreground mb-4">Welcome!</h2>
+          <p className="text-muted-foreground mb-6">
+            Thank you for joining our community of African artisans and creatives. We're excited to showcase your work!
+          </p>
+          <p className="text-sm text-muted-foreground mb-6">
+            We'll review your application and send you an email with next steps.
+          </p>
+          <Button
+            onClick={() => setSubmitted(false)}
+            className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
+          >
+            Submit Another Application
+          </Button>
+        </Card>
+      </div>
+    )
+  }
+
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
@@ -39,10 +68,10 @@ export default function SellerOnboarding() {
             </div>
           </div>
 
-          {/* Waitlist Section */}
+          {/* Form Section */}
           <div className="lg:col-span-2">
             <Card className="p-8">
-              <SellerForm onSubmit={() => {}} />
+              <SellerForm onSubmit={() => setSubmitted(true)} />
             </Card>
           </div>
         </div>
