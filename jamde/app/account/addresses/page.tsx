@@ -1,4 +1,4 @@
-import { Address } from '@prisma/client'
+import {type Address } from '@prisma/client'
 import { auth } from '@/auth'
 import { revalidatePath } from 'next/cache'
 import { Star, Trash2 } from 'lucide-react'
